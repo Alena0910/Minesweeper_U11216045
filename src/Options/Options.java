@@ -78,7 +78,7 @@ public class Options {
                 row = 10;
                 col = 10;
                 cellSize = 30;
-                openMinesweeper(1, cellSize * col, cellSize * row, row, col, mineAmount);
+                openMinesweeper(1, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
                 frame.dispose();
             }
         });
@@ -89,18 +89,18 @@ public class Options {
                 row = 20;
                 col = 30;
                 cellSize = 20;
-                openMinesweeper(2, cellSize * col, cellSize * row, row, col, mineAmount);
+                openMinesweeper(2, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
                 frame.dispose();
             }
         });
         hard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mineAmount = 350;
+                mineAmount = 320;
                 row = 30;
                 col = 40;
                 cellSize = 20;
-                openMinesweeper(3, cellSize * col, cellSize * row, row, col, mineAmount);
+                openMinesweeper(3, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
                 frame.dispose();
             }
         });
@@ -110,13 +110,13 @@ public class Options {
         frame.setVisible(true);
     }
 
-    public static void openMinesweeper(int gameMode, int Width, int Height, int row, int col, int mineAmount) {
+    public static void openMinesweeper(int gameMode, int Width, int Height, int row, int col, int mineAmount, int cellSize) {
         
         String titleString = gameModes[gameMode - 1] + " Minesweeper";
         
         JFrame frame = new JFrame(titleString);
         frame.setVisible(true);
-        frame.setSize(Width + 100, Height + 100);
+        frame.setSize(Width + 200, Height + 200);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,4 +129,3 @@ public class Options {
         minesweeper.requestFocus();
     }
 }
-//C:\Users\黃品甄\Documents\GitHub\Minesweeper_U11216045\src\Main.java
