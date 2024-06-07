@@ -7,14 +7,18 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class Minesweeper extends JPanel implements ActionListener, KeyListener {
+
+    JFrame frame = new JFrame("Minesweeper");
+
     int cellSize = 10, Rows = 10, Columns = 10;
     int mineAmount = 10, totalEmptyTiles = 0;
+    int gameMode = 1;
     private static String[] gameModes = {"Easy", "Medium", "Hard"};
     private static String[] imageFileName = {"img1.jpg", "img2.jpg", "img3.jpg"};
 
     // String bomb = "💣", flag = "🚩";
     String bomb = "X", flag = "O";
-
+    String username = new String();
     Timer timer;
     int timeCounter = 0;
     boolean gameOver = false, win = false;
@@ -23,12 +27,15 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
     MineTile[][] board = new MineTile[500][500];
     ArrayList<MineTile> mineList = new ArrayList<MineTile>();
 
-    public Minesweeper(JFrame frame, int gameMode, int boardWidth, int boardHeight, int Rows, int Columns, int mineAmount, int cellSize) {
+    public Minesweeper(JFrame frame, String username, int gameMode, int boardWidth, int boardHeight, int Rows, int Columns, int mineAmount, int cellSize) {
+        this.frame = frame;
         this.cellSize = cellSize;
         this.Rows = Rows;
         this.Columns = Columns;
         this.mineAmount = mineAmount;
+        this.gameMode = gameMode;
         this.totalEmptyTiles = Rows * Columns - mineAmount;
+        this.username = username;
 
         setPreferredSize(new Dimension(boardWidth + 200, boardHeight + 200));
 
@@ -73,7 +80,11 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeCounter++;
-                timerLabel.setText("Time: " + timeCounter);
+                timerLabel.setText("Time: " + timeCounter + " safe: " + safe + " total: " + totalEmptyTiles);
+                if(safe == totalEmptyTiles){
+                    win = true;
+                    revealMines();
+                }
             }
         });
         timer.start();
@@ -148,8 +159,9 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
                             }
                             if(safe == totalEmptyTiles){
                                 win = true;
+                                GameOverFrame.openGameOverFrame(frame, username, gameMode, win, timeCounter);
+                                timer.stop();
                                 revealMines();
-                                JOptionPane.showMessageDialog(null, "You win!");
                             }
                         }
                         //right click
@@ -195,7 +207,8 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
             tile.setBackground(Setting.bombColor);
             tile.setText(bomb);
         }
-        gameOver = true;
+        GameOverFrame.openGameOverFrame(frame, username, gameMode, win, timeCounter);
+        timer.stop();
         timer.stop();
     }
 

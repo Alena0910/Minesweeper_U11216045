@@ -5,22 +5,24 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import Options.Options;
+
 public class GameOverFrame {
 
     private static String[] gameModes = {"Easy", "Medium", "Hard"};
 
-    public static void openGameOverFrame(int gameMode, int boardWidth, int boardHeight, int Rows, int Columns, int mineAmount, int cellSize, boolean win) {
+    public static void openGameOverFrame(JFrame gameframe, String username, int gameMode, boolean win, int totalTime) {
         JFrame frame = new JFrame("Options");
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(boardWidth, boardHeight);
+        frame.setSize(600, 300);
         frame.setLayout(new GridBagLayout());
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setPreferredSize(new Dimension(boardWidth, boardHeight));
+        panel.setPreferredSize(new Dimension(600, 300));
         panel.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -29,29 +31,46 @@ public class GameOverFrame {
         gbc.insets = new Insets(10, 0, 10, 0);
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JLabel title = new JLabel("Minesweeper");
+        JLabel title = new JLabel(gameModes[gameMode - 1] + " Minesweeper");
         title.setFont(new Font("Arial", Font.BOLD, 30));
         panel.add(title, gbc);
 
-        JLabel label = new JLabel("Options");
+        String labelText = win ? "You Win! Total Time: " + totalTime : "Game Over!";
+
+        JLabel label = new JLabel(labelText);
         label.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(label, gbc);
 
-        Font buttonFont = new Font("Arial", Font.PLAIN, 20);
+        JButton RestartButton = newButton("Restart", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton OptionsButton = newButton("Options", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton ExitButton = newButton("Exit", Setting.buttonFont, 100, 50, Color.WHITE);
 
-        JButton Restart = newButton("Restart", buttonFont, 100, 50, Color.WHITE);
-        JButton Options = newButton("Options", buttonFont, 100, 50, Color.WHITE);
-        JButton Exit = newButton("Exit", buttonFont, 100, 50, Color.WHITE);
+        panel.add(RestartButton, gbc);
+        panel.add(OptionsButton, gbc);
+        panel.add(ExitButton, gbc);
 
-        panel.add(Restart, gbc);
-        panel.add(Options, gbc);
-        panel.add(Exit, gbc);
-
-        Restart.addActionListener(new ActionListener() {
+        RestartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openMinesweeper(gameMode, boardWidth, boardHeight, Rows, Columns, mineAmount, cellSize);
+                gameframe.dispose();
                 frame.dispose();
+                int[] gameSetting = gameMode == 1 ? Setting.easySetting : gameMode == 2 ? Setting.mediumSetting : Setting.hardSetting;
+                Options.openMinesweeper(username, gameMode, gameSetting[3] * gameSetting[4], gameSetting[2] * gameSetting[4], gameSetting[2], gameSetting[3], gameSetting[1], gameSetting[4]);
+            }
+        });
+        OptionsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Options.openOptions(username);
+                gameframe.dispose();
+                frame.dispose();
+            }
+        });
+        ExitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                System.exit(0);
             }
         });
 
@@ -69,24 +88,5 @@ public class GameOverFrame {
         button.setBackground(color);
         button.setBorder(new LineBorder(new Color(71, 108, 108), 2));
         return button;
-    }
-    
-    public static void openMinesweeper(int gameMode, int Width, int Height, int row, int col, int mineAmount, int cellSize) {
-        
-        String titleString = gameModes[gameMode - 1] + " Minesweeper";
-        
-        JFrame frame = new JFrame(titleString);
-        frame.setVisible(true);
-        frame.setSize(Width + 200, Height + 200);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-
-        Minesweeper minesweeper = new Minesweeper(frame, gameMode, Width, Height, row, col, mineAmount, cellSize);
-
-        frame.add(minesweeper, BorderLayout.CENTER);
-        frame.pack();
-        minesweeper.requestFocus();
     }
 }

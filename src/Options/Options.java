@@ -3,9 +3,10 @@ package Options;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import Games.Minesweeper;
+import Games.Setting;
+import RankingList.RankingList;
 
 public class Options {
 
@@ -15,7 +16,7 @@ public class Options {
     static int cellSize = 20;
     static int row = 10, col = 10;
 
-    public static void openOptions() {
+    public static void openOptions(String username) {
         JFrame frame = new JFrame("Options");
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,64 +44,53 @@ public class Options {
         label.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(label, gbc);
 
-        JButton easy = new JButton("Easy");
-        easy.setFont(new Font("Arial", Font.PLAIN, 20));
-        easy.setPreferredSize(new Dimension(100, 50));
-        easy.setContentAreaFilled(true);
-        easy.setForeground(Color.BLACK);
-        easy.setBackground(Color.WHITE);
-        easy.setBorder(new LineBorder(new Color(71, 108, 108), 2));
-
-        JButton medium = new JButton("Medium");
-        medium.setFont(new Font("Arial", Font.PLAIN, 20));
-        medium.setPreferredSize(new Dimension(100, 50));
-        medium.setContentAreaFilled(true);
-        medium.setForeground(Color.BLACK);
-        medium.setBackground(Color.WHITE);
-        medium.setBorder(new LineBorder(new Color(71, 108, 108), 2));
-
-        JButton hard = new JButton("Hard");
-        hard.setFont(new Font("Arial", Font.PLAIN, 20));
-        hard.setPreferredSize(new Dimension(100, 50));
-        hard.setContentAreaFilled(true);
-        hard.setForeground(Color.BLACK);
-        hard.setBackground(Color.WHITE);
-        hard.setBorder(new LineBorder(new Color(71, 108, 108), 2));
+        JButton easy = Setting.newButton("Easy", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton medium = Setting.newButton("Medium", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton hard = Setting.newButton("Hard", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton rank = Setting.newButton("Ranking List", Setting.buttonFont, 150, 50, Color.WHITE);
 
         panel.add(easy, gbc);
         panel.add(medium, gbc);
         panel.add(hard, gbc);
+        panel.add(rank, gbc);
 
         easy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mineAmount = 10;
-                row = 10;
-                col = 10;
-                cellSize = 30;
-                openMinesweeper(1, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
+                mineAmount = Setting.easySetting[1];
+                row = Setting.easySetting[2];
+                col = Setting.easySetting[3];
+                cellSize = Setting.easySetting[4];
+                openMinesweeper(username, 1, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
                 frame.dispose();
             }
         });
         medium.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mineAmount = 70;
-                row = 20;
-                col = 30;
-                cellSize = 20;
-                openMinesweeper(2, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
+                mineAmount = Setting.mediumSetting[1];
+                row = Setting.mediumSetting[2];
+                col = Setting.mediumSetting[3];
+                cellSize = Setting.mediumSetting[4];
+                openMinesweeper(username, 2, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
                 frame.dispose();
             }
         });
         hard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mineAmount = 320;
-                row = 30;
-                col = 40;
-                cellSize = 20;
-                openMinesweeper(3, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
+                mineAmount = Setting.hardSetting[1];
+                row = Setting.hardSetting[2];
+                col = Setting.hardSetting[3];
+                cellSize = Setting.hardSetting[4];
+                openMinesweeper(username, 3, cellSize * col, cellSize * row, row, col, mineAmount, cellSize);
+                frame.dispose();
+            }
+        });
+        rank.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RankingList.openRankingList(username);
                 frame.dispose();
             }
         });
@@ -110,7 +100,7 @@ public class Options {
         frame.setVisible(true);
     }
 
-    public static void openMinesweeper(int gameMode, int Width, int Height, int row, int col, int mineAmount, int cellSize) {
+    public static void openMinesweeper(String username, int gameMode, int Width, int Height, int row, int col, int mineAmount, int cellSize) {
         
         String titleString = gameModes[gameMode - 1] + " Minesweeper";
         
@@ -122,7 +112,7 @@ public class Options {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        Minesweeper minesweeper = new Minesweeper(frame, gameMode, Width, Height, row, col, mineAmount, cellSize);
+        Minesweeper minesweeper = new Minesweeper(frame, username, gameMode, Width, Height, row, col, mineAmount, cellSize);
 
         frame.add(minesweeper, BorderLayout.CENTER);
         frame.pack();
