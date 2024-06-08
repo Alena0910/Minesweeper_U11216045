@@ -54,6 +54,8 @@ public class RankingList {
                 darkShadow = transparent; // 未選擇標籤的邊框顏色
                 focus = transparent; // 標籤被選中時的顏色
             }
+            @Override
+            protected void paintContentBorderTopEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {}
         });
 
         JTable table1 = createTable();
@@ -71,16 +73,20 @@ public class RankingList {
                 switch(index){
                     case 0:
                         readRankingList(table1, 1);
+                        table1.repaint(); // 手動重繪
                         break;
                     case 1:
                         readRankingList(table2, 2);
+                        table2.repaint(); // 手動重繪
                         break;
                     case 2:
                         readRankingList(table3, 3);
+                        table3.repaint(); // 手動重繪
                         break;
                 }
             }
         });
+        
 
         panel.add(tabbedPane, gbc);
 
