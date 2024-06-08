@@ -30,8 +30,8 @@ public class EnterUserName {
 
 
         JButton button = Setting.newButton("Start Game", Setting.buttonFont, 150, 50, new Color(237, 106, 94));
-        button.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+        ActionListener startGameAction = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 String name = textField.getText();
                 if(name.equals("")){
                     JOptionPane.showMessageDialog(frame, "Please enter your name", "Error", JOptionPane.ERROR_MESSAGE);
@@ -41,7 +41,11 @@ public class EnterUserName {
                     Options.openOptions(name);
                 }
             }
-        });
+        };
+        button.addActionListener(startGameAction);
+
+        // Add the same action listener to the text field
+        textField.addActionListener(startGameAction);
 
 
         GridBagConstraints gbc = new GridBagConstraints();
