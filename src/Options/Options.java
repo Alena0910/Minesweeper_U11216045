@@ -6,7 +6,6 @@ import javax.swing.*;
 
 import Games.Minesweeper;
 import Games.Setting;
-import RankingList.RankingList;
 
 public class Options {
 

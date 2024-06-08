@@ -1,7 +1,9 @@
-package RankingList;
+package Options;
+
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.table.*;
 import java.io.*;
@@ -61,6 +63,24 @@ public class RankingList {
         tabbedPane.add("Easy", createTablePanel("Easy", table1));
         tabbedPane.add("Medium", createTablePanel("Medium", table2));
         tabbedPane.add("Hard", createTablePanel("Hard", table3));
+
+        tabbedPane.addChangeListener(new ChangeListener(){
+            @Override
+            public void stateChanged(ChangeEvent e){
+                int index = tabbedPane.getSelectedIndex();
+                switch(index){
+                    case 0:
+                        readRankingList(table1, 1);
+                        break;
+                    case 1:
+                        readRankingList(table2, 2);
+                        break;
+                    case 2:
+                        readRankingList(table3, 3);
+                        break;
+                }
+            }
+        });
 
         panel.add(tabbedPane, gbc);
 
@@ -145,12 +165,25 @@ public class RankingList {
         String filename = textures[game - 1];
         String[] name = new String[10];
         int[] scoreList = new int[10];
+        int counter = 0;
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);        
         table.setModel(model);
+        File file = new File(filename);
         try{
+            if(!file.exists()){
+                file.createNewFile();
+                BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+                for(int i = 0; i < 10; i++){
+                    bw.write("N/A");
+                    bw.newLine();
+                    bw.write(Integer.toString(Integer.MAX_VALUE));
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
-            int counter = 0;
             while((line = br.readLine()) != null){
                 if(counter >= 10) break;
                 name[counter] = line;
@@ -159,18 +192,18 @@ public class RankingList {
                 model.addRow(new Object[]{counter + 1, name[counter], scoreList[counter]});
                 counter++;
             }
-            while(counter < 10){
-                name[counter] = "N/A";
-                scoreList[counter] = Integer.MAX_VALUE;
-                model.addRow(new Object[]{counter + 1, name[counter], scoreList[counter]});
-                counter++;
-            }
-            rankName = name;
-            rankScore = scoreList;
             br.close();
         } catch(IOException e){
             e.printStackTrace();
         }
+        while(counter < 10){
+            name[counter] = "N/A";
+            scoreList[counter] = Integer.MAX_VALUE;
+            model.addRow(new Object[]{counter + 1, name[counter], scoreList[counter]});
+            counter++;
+        }
+        rankName = name;
+        rankScore = scoreList;
     }
 
 
@@ -178,10 +211,23 @@ public class RankingList {
         String filename = textures[game - 1];
         String[] name = new String[10];
         int[] scoreList = new int[10];
+        int counter = 0;
+        File file = new File(filename);
         try{
+            if(!file.exists()){
+                file.createNewFile();
+                BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+                for(int i = 0; i < 10; i++){
+                    bw.write("N/A");
+                    bw.newLine();
+                    bw.write(Integer.toString(Integer.MAX_VALUE));
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            }
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
-            int counter = 0;
             while((line = br.readLine()) != null){
                 if(counter >= 10) break;
                 name[counter] = line;
@@ -197,13 +243,14 @@ public class RankingList {
             rankName = name;
             rankScore = scoreList;
             br.close();
+            
         } catch(IOException e){
             e.printStackTrace();
         }
     }
 
 
-    public static void rewriteRankingList(int game, String username, int score, boolean win){
+    public static void rewriteRankingList(int game, String username, int score){
         String filename = textures[game - 1];
         String[] name = rankName;
         int[] scoreList = rankScore;
@@ -211,7 +258,7 @@ public class RankingList {
             BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
             if(score > 0){
                 for(int i = 0; i < 10; i++){
-                    if(score > scoreList[i]){
+                    if(score < scoreList[i]){
                         for(int j = 9; j > i; j--){
                             name[j] = name[j - 1];
                             scoreList[j] = scoreList[j - 1];

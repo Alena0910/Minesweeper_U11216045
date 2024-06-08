@@ -6,13 +6,14 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import Options.Options;
+import Options.RankingList;
 
 public class GameOverFrame {
 
     private static String[] gameModes = {"Easy", "Medium", "Hard"};
 
     public static void openGameOverFrame(JFrame gameframe, String username, int gameMode, boolean win, int totalTime) {
-        JFrame frame = new JFrame("Options");
+        JFrame frame = new JFrame("Game Over");
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 300);
@@ -48,6 +49,11 @@ public class GameOverFrame {
         panel.add(RestartButton, gbc);
         panel.add(OptionsButton, gbc);
         panel.add(ExitButton, gbc);
+
+        if(win){
+            RankingList.readRankingList(gameMode);
+            RankingList.rewriteRankingList(gameMode, username, totalTime);
+        }
 
         RestartButton.addActionListener(new ActionListener() {
             @Override
