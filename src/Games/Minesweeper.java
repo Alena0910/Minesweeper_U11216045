@@ -14,7 +14,6 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
     int mineAmount = 10, totalEmptyTiles = 0;
     int gameMode = 1;
     private static String[] gameModes = {"Easy", "Medium", "Hard"};
-    private static String[] imageFileName = {"img1.jpg", "img2.jpg", "img3.jpg"};
 
     // String bomb = "💣", flag = "🚩";
     String bomb = "X", flag = "O";
@@ -43,8 +42,7 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         requestFocus();
 
-        ImagePanel panel = new ImagePanel(imageFileName[gameMode - 1], boardWidth + 200, boardHeight + 200);
-        panel.setLayout(new GridBagLayout());
+        JPanel panel = newPanel(Setting.transparent, boardWidth + 200, boardHeight + 200);
         panel.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -69,7 +67,6 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
         gbc.insets = new Insets(0, 0, 0, 0);
 
         JPanel gamePanel = newPanel(Setting.transparent, boardWidth, boardHeight);
-        gamePanel.setLayout(new GridBagLayout());
         panel.add(gamePanel, gbc);
 
         tileHandle(gamePanel);
@@ -80,7 +77,7 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeCounter++;
-                timerLabel.setText("Time: " + timeCounter + " safe: " + safe + " total: " + totalEmptyTiles);
+                timerLabel.setText("Time: " + timeCounter);
                 if(safe == totalEmptyTiles){
                     win = true;
                     revealMines();
@@ -140,8 +137,9 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
 
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
-                tile.setFont(new Font("Arial", Font.BOLD, 14));
+                tile.setFont(new Font("Arial", Font.BOLD, 16));
                 tile.setText("");
+                tile.setBackground(Setting.cellBackgroundColor);
 
                 tile.addMouseListener(new MouseAdapter() {
                     @Override
@@ -151,17 +149,16 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
                         if(e.getButton() == MouseEvent.BUTTON1 && gameOver == false){
                             if(tile.getText() == ""){
                                 if(mineList.contains(tile)){
+                                    gameOver = true;
                                     revealMines();
                                 }
                                 else{
-                                    checkMine(tile.r, tile.c);
+                                    checkMine(tile.r, tile.c, gamePanel);
                                 }
                             }
                             if(safe == totalEmptyTiles){
                                 win = true;
-                                GameOverFrame.openGameOverFrame(frame, username, gameMode, win, timeCounter);
-                                timer.stop();
-                                revealMines();
+                                gameOver = true;
                             }
                         }
                         //right click
@@ -173,7 +170,16 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
                                 tile.setText("");
                             }
                         }
+                        if(gameOver == true){
+                            timer.stop();
+                            GameOverFrame.openGameOverFrame(frame, username, gameMode, win, timeCounter);
+                            revealMines();
+                        }
                     }
+                    @Override
+                    public void mouseEntered(MouseEvent e) {}
+                    @Override
+                    public void mouseExited(MouseEvent e) {}
                 });
 
                 GridBagConstraints tileGbc = new GridBagConstraints();
@@ -207,42 +213,38 @@ public class Minesweeper extends JPanel implements ActionListener, KeyListener {
             tile.setBackground(Setting.bombColor);
             tile.setText(bomb);
         }
-        GameOverFrame.openGameOverFrame(frame, username, gameMode, win, timeCounter);
-        timer.stop();
-        timer.stop();
     }
 
-    void checkMine(int r, int c){
+    void checkMine(int r, int c, JPanel gamePanel){
         MineTile tile = board[r][c];
         tile.setEnabled(false);
         int minesFound = 0;
-
+    
         for(int i = 0; i < 8; i++){
             int x = r + Setting.dir[i * 2];
             int y = c + Setting.dir[i * 2 + 1];
-
+    
             minesFound += minesCount(x, y);
         }
-
+    
         tile.setBackground(Color.WHITE);
         
         if(minesFound > 0){
             tile.setForeground(Setting.buttonFontColor[minesFound - 1]);
-            tile.setText(minesFound + "");
+            tile.setText(String.valueOf(minesFound));
         }
         else{
             tile.setText("");
             for(int i = 0; i < 8; i++){
                 int x = r + Setting.dir[i * 2];
                 int y = c + Setting.dir[i * 2 + 1];
-
+    
                 if(x >= 0 && x < Rows && y >= 0 && y < Columns && board[x][y].isEnabled()){
-                    checkMine(x, y);
+                    checkMine(x, y, gamePanel);
                 }
             }
         }
-
-        tile.repaint();
+    
         safe++;
     }
 

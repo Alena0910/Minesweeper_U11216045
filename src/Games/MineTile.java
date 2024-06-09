@@ -1,8 +1,8 @@
 package Games;
 
 import java.awt.*;
-
 import javax.swing.*;
+
 
 public class MineTile extends JButton{
     int r;
@@ -13,7 +13,10 @@ public class MineTile extends JButton{
         this.c = c;
 
         setBackground(Setting.cellBackgroundColor);
-        setForeground(Color.BLACK);
         setPreferredSize(new Dimension(cellSize, cellSize));
+    }
+
+    public void setTileTextColor(Color color) {
+        setForeground(color);
     }
 }

@@ -8,6 +8,8 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.table.*;
 import java.io.*;
 
+import Games.ImagePanel;
+
 
 public class RankingList {
 
@@ -26,11 +28,10 @@ public class RankingList {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
 
-        JPanel panel = new JPanel();
+        String backgroundImageFile = "RankingBackgroundImage.jpg";
+        ImagePanel panel = new ImagePanel(backgroundImageFile, 400, 600);
         panel.setLayout(new GridBagLayout());
         panel.setOpaque(false);
-        panel.setPreferredSize(new Dimension(400, 600));
-        panel.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;

@@ -3,7 +3,6 @@ package Games;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import Options.Options;
 import Options.RankingList;
@@ -16,14 +15,14 @@ public class GameOverFrame {
         JFrame frame = new JFrame("Game Over");
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 300);
+        frame.setSize(600, 400);
         frame.setLayout(new GridBagLayout());
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setPreferredSize(new Dimension(600, 300));
+        panel.setPreferredSize(new Dimension(600, 400));
         panel.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -42,9 +41,9 @@ public class GameOverFrame {
         label.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(label, gbc);
 
-        JButton RestartButton = newButton("Restart", Setting.buttonFont, 100, 50, Color.WHITE);
-        JButton OptionsButton = newButton("Options", Setting.buttonFont, 100, 50, Color.WHITE);
-        JButton ExitButton = newButton("Exit", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton RestartButton = Setting.newButton("Restart", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton OptionsButton = Setting.newButton("Options", Setting.buttonFont, 100, 50, Color.WHITE);
+        JButton ExitButton = Setting.newButton("Exit", Setting.buttonFont, 100, 50, Color.WHITE);
 
         panel.add(RestartButton, gbc);
         panel.add(OptionsButton, gbc);
@@ -83,16 +82,5 @@ public class GameOverFrame {
         frame.add(panel);
         frame.pack();
         frame.setVisible(true);
-    }
-
-    static JButton newButton(String text, Font font, int width, int height, Color color) {
-        JButton button = new JButton(text);
-        button.setFont(font);
-        button.setPreferredSize(new Dimension(width, height));
-        button.setContentAreaFilled(true);
-        button.setForeground(Color.BLACK);
-        button.setBackground(color);
-        button.setBorder(new LineBorder(new Color(71, 108, 108), 2));
-        return button;
     }
 }
