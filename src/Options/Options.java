@@ -90,7 +90,6 @@ public class Options {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RankingList.openRankingList(username);
-                frame.dispose();
             }
         });
 
